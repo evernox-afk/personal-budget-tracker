@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b12">
+<title>NOIR — Personal Finance Tracker</title>
+<style>
+:root{--bg:#090b12;--panel:#111522;--panel2:#171d2c;--line:#252d40;--text:#eef2ff;--muted:#8993aa;--green:#52e0a0;--red:#ff6b7d;--violet:#9c8cff;--cyan:#67d9ef}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1a1d38 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:1250px;margin:auto;padding:28px 22px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:28px}.brand{display:flex;align-items:center;gap:12px}.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--violet),#5545bd);display:grid;place-items:center;font-weight:900;font-size:20px;box-shadow:0 8px 30px #7865ff40}.brand h1{font-size:18px;letter-spacing:3px;margin:0}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:1.5px}.top-actions{display:flex;gap:9px;flex-wrap:wrap}
+button,.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:10px 14px;font-weight:650;cursor:pointer;transition:.2s}button:hover,.btn:hover{border-color:var(--violet);transform:translateY(-1px)}button.primary{background:var(--violet);border-color:var(--violet);color:#090b12}button.danger{color:var(--red)}
+.hero{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:22px 0}.eyebrow{color:var(--violet);font-size:11px;letter-spacing:2px;font-weight:800}.hero h2{font-size:clamp(25px,4vw,36px);margin:5px 0 0;letter-spacing:-1px}.hero p{margin:5px 0 0;color:var(--muted)}.month-control{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);padding:8px 12px;border-radius:12px}.month-control input{background:transparent;color:var(--text);border:0;outline:0;font:inherit}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}.card,.box{background:linear-gradient(145deg,#151b2a,#101522);border:1px solid var(--line);border-radius:17px;padding:18px;min-width:0}.card .label{color:var(--muted);font-size:12px}.card .value{font-size:clamp(21px,3vw,29px);font-weight:800;letter-spacing:-.8px;margin:7px 0 2px;overflow-wrap:anywhere}.card .hint{font-size:11px;color:var(--muted)}.green{color:var(--green)!important}.red{color:var(--red)!important}.violet{color:var(--violet)!important}.cyan{color:var(--cyan)!important}
+.grid{display:grid;grid-template-columns:minmax(300px, .85fr) minmax(0,1.5fr);gap:16px}.box h3{margin:0 0 4px;font-size:16px}.sub{color:var(--muted);font-size:12px;margin:0 0 17px}
+form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.5px}input,select,textarea{width:100%;background:#0b101b;border:1px solid var(--line);border-radius:9px;padding:11px;color:var(--text);font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--violet)}input::placeholder,textarea::placeholder{color:#626d84}.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px}.type-toggle button{padding:9px}.type-toggle button.active.income{background:#153b30;border-color:var(--green);color:var(--green)}.type-toggle button.active.expense{background:#411d2a;border-color:var(--red);color:var(--red)}.submit{grid-column:1/-1;width:100%;padding:13px;margin-top:3px}
+.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 12px}.toolbar h3{margin:0}.filters{display:flex;gap:8px;flex-wrap:wrap}.filters input,.filters select{width:auto;min-width:130px;padding:9px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:12px 13px;border-bottom:1px solid var(--line);font-size:12px}th{color:var(--muted);font-size:10px;letter-spacing:1px;background:#0d1220}tr:last-child td{border-bottom:0}.amount{font-weight:800;white-space:nowrap}.pill{font-size:10px;padding:4px 8px;border-radius:20px;background:#252d40;color:#b8c2d9}.empty{text-align:center;color:var(--muted);padding:30px}.delete{padding:5px 8px;color:var(--red);font-size:11px}
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.summary-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.summary-row:last-child{border:0}.bar{height:8px;border-radius:20px;background:#252d40;overflow:hidden;margin-top:8px}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan));width:0}
+.note{color:var(--muted);font-size:11px;margin-top:16px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#202a3b;border:1px solid var(--line);padding:10px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s}.toast.show{opacity:1}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}@media(max-width:560px){.wrap{padding:18px 13px 40px}.top{align-items:flex-start}.top-actions button{padding:8px 10px;font-size:11px}.hero{align-items:flex-start;flex-direction:column}.month-control{width:100%;justify-content:space-between}.month-control input{flex:1}.bottom-grid{grid-template-columns:1fr}.card,.box{padding:15px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand"><div class="mark">N</div><div><h1>NOIR</h1><small>PERSONAL FINANCE CONTROL</small></div></div>
+  <div class="top-actions">
+    <button id="exportCsv">Export CSV</button><button id="backup">Backup data</button><button id="restoreBtn">Restore</button><input id="restoreFile" type="file" accept="application/json" hidden>
+  </div>
+</header>
+<section class="hero">
+ <div><div class="eyebrow">YOUR MONEY. YOUR CONTROL.</div><h2>Money overview<span class="violet">.</span></h2><p>Track every rupee — where it came from and where it went.</p></div>
+ <div class="month-control"><span>MONTH</span><input type="month" id="monthPicker"></div>
+</section>
+<section class="cards">
+ <div class="card"><div class="label">AVAILABLE BALANCE</div><div class="value cyan" id="balance">₹0</div><div class="hint">Opening balance + all-time net</div></div>
+ <div class="card"><div class="label">MONEY RECEIVED · THIS MONTH</div><div class="value green" id="income">₹0</div><div class="hint">All recorded income</div></div>
+ <div class="card"><div class="label">MONEY SPENT · THIS MONTH</div><div class="value red" id="expense">₹0</div><div class="hint">All recorded expenses</div></div>
+ <div class="card"><div class="label">NET PROFIT / LOSS · THIS MONTH</div><div class="value" id="net">₹0</div><div class="hint" id="netHint">Income minus expenses</div></div>
+</section>
+<section class="grid">
+ <div class="box">
+  <h3>Add transaction</h3><p class="sub">Record income or expense. Use the details to remember who paid or who received money.</p>
+  <form id="entryForm">
+   <div class="field full"><label>TRANSACTION TYPE</label><div class="type-toggle"><button type="button" class="active income" data-type="income">＋ Income</button><button type="button" data-type="expense" class="expense">－ Expense</button></div></div>
+   <div class="field"><label>AMOUNT (₹) *</label><input id="amount" type="number" min="0.01" step="0.01" placeholder="e.g. 500" required></div>
+   <div class="field"><label>DATE *</label><input id="date" type="date" required></div>
+   <div class="field"><label>FROM / TO *</label><input id="person" placeholder="Person, company, shop..." required></div>
+   <div class="field"><label>CATEGORY</label><select id="category"><option>Salary / Job</option><option>Business</option><option>Food</option><option>Travel</option><option>Shopping</option><option>Bills</option><option>Education</option><option>Health</option><option>Transfer</option><option>Loan</option><option>Other</option></select></div>
+   <div class="field full"><label>SOURCE / DESTINATION</label><input id="source" placeholder="e.g. Cash, UPI, Bank, Freelance work"></div>
+   <div class="field full"><label>NOTE (OPTIONAL)</label><input id="note" placeholder="What was this payment for?"></div>
+   <button class="primary submit" type="submit">＋ Save transaction</button>
+  </form>
+  <div class="field" style="margin-top:17px"><label>OPENING BALANCE (₹)</label><input id="opening" type="number" step="0.01" placeholder="Enter money you had before tracking"></div>
+  <p class="note">Opening balance is your starting money before the transactions you record. Set it once; update it only if you need to correct your starting amount.</p>
+ </div>
+ <div class="box">
+  <div class="toolbar"><div><h3>Transaction history</h3><p class="sub" style="margin:3px 0 0">Entries for the selected month</p></div><div class="filters"><input id="search" placeholder="Search person / note"><select id="kindFilter"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option></select></div></div>
+  <div class="table-wrap"><table><thead><tr><th>DATE</th><th>DETAILS</th><th>TYPE</th><th>AMOUNT</th><th></th></tr></thead><tbody id="transactions"></tbody></table></div>
+  <div class="empty" id="empty">No transactions for this month yet. Add your first entry.</div>
+ </div>
+</section>
+<section class="bottom-grid">
+ <div class="box"><h3>Monthly breakdown</h3><p class="sub">Selected month's money movement</p>
+  <div class="summary-row"><span>Total income</span><strong class="green" id="breakIncome">₹0</strong></div>
+  <div class="summary-row"><span>Total expenses</span><strong class="red" id="breakExpense">₹0</strong></div>
+  <div class="summary-row"><span>Net result</span><strong id="breakNet">₹0</strong></div>
+  <div class="summary-row"><span>Transactions</span><strong id="count">0</strong></div>
+  <div class="summary-row"><span>Expense / income ratio</span><strong id="ratio">—</strong></div>
+ </div>
+ <div class="box"><h3>Spending meter</h3><p class="sub">How much of this month's income has been spent</p><div style="display:flex;justify-content:space-between;font-size:13px"><span>Spent</span><strong id="spentPercent">0%</strong></div><div class="bar"><span id="spendBar"></span></div><p class="note" id="spendMessage">Add income and expenses to see your spending ratio.</p><p class="note">All values are calculated from the transactions you enter. A positive net is a surplus; a negative net is a loss for that month.</p></div>
+</section>
+<p class="note">🔒 Privacy: data is stored in this browser on this device using localStorage. It is not automatically synced to GitHub or another device. Use Backup data regularly. Avoid entering bank passwords, card numbers or other sensitive credentials.</p>
+</div><div class="toast" id="toast"></div>
+<script>
+const KEY='noir_finance_v1';
+let state={opening:0,transactions:[]},type='income';
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(n||0);
+const today=new Date().toISOString().slice(0,10);
+$('date').value=today;$('monthPicker').value=today.slice(0,7);
+try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&Array.isArray(saved.transactions))state=saved;}catch(e){}
+$('opening').value=state.opening||'';
+function persist(){localStorage.setItem(KEY,JSON.stringify(state));}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200);}
+function monthRows(){const m=$('monthPicker').value;return state.transactions.filter(t=>t.date.slice(0,7)===m);}
+function totals(rows){return rows.reduce((a,t)=>(a[t.type]+=Number(t.amount),a),{income:0,expense:0});}
+function render(){
+ const all=totals(state.transactions),rows=monthRows(),m=totals(rows),net=m.income-m.expense,balance=Number(state.opening)+all.income-all.expense;
+ $('balance').textContent=money(balance);$('income').textContent=money(m.income);$('expense').textContent=money(m.expense);
+ $('net').textContent=money(net);$('net').className='value '+(net>=0?'green':'red');$('netHint').textContent=net>=0?'Surplus this month':'Deficit this month';
+ $('breakIncome').textContent=money(m.income);$('breakExpense').textContent=money(m.expense);$('breakNet').textContent=money(net);$('breakNet').className=net>=0?'green':'red';$('count').textContent=rows.length;
+ $('ratio').textContent=m.income?((m.expense/m.income)*100).toFixed(1)+'%':'—';
+ const pct=m.income?Math.min(100,(m.expense/m.income)*100):0;$('spentPercent').textContent=pct.toFixed(1)+'%';$('spendBar').style.width=pct+'%';
+ $('spendMessage').textContent=!m.income?'Add income and expenses to see your spending ratio.':m.expense>m.income?'Warning: expenses are higher than income this month.':`You have ${money(net)} left from this month's recorded income.`;
+ const q=$('search').value.toLowerCase(),filter=$('kindFilter').value;
+ const shown=rows.filter(t=>(filter==='all'||t.type===filter)&&[t.person,t.note,t.category,t.source].join(' ').toLowerCase().includes(q)).sort((a,b)=>b.date.localeCompare(a.date));
+ $('transactions').innerHTML=shown.map(t=>`<tr><td>${t.date}</td><td><strong>${esc(t.person)}</strong><br><span style="color:var(--muted)">${esc(t.category)}${t.source?' · '+esc(t.source):''}${t.note?' · '+esc(t.note):''}</span></td><td><span class="pill">${t.type}</span></td><td class="amount ${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'−'}${money(t.amount)}</td><td><button class="delete" data-delete="${t.id}" title="Delete">Delete</button></td></tr>`).join('');
+ $('empty').style.display=shown.length?'none':'block';
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+document.querySelectorAll('[data-type]').forEach(b=>b.addEventListener('click',()=>{type=b.dataset.type;document.querySelectorAll('[data-type]').forEach(x=>x.classList.toggle('active',x===b));}));
+$('entryForm').addEventListener('submit',e=>{e.preventDefault();const amount=Number($('amount').value);if(!Number.isFinite(amount)||amount<=0)return toast('Enter a valid amount.');state.transactions.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),type,amount,date:$('date').value,person:$('person').value.trim(),category:$('category').value,source:$('source').value.trim(),note:$('note').value.trim()});persist();$('entryForm').reset();$('date').value=today;render();toast('Transaction saved.');});
+$('opening').addEventListener('change',()=>{state.opening=Number($('opening').value)||0;persist();render();toast('Opening balance updated.');});
+$('monthPicker').addEventListener('change',render);$('search').addEventListener('input',render);$('kindFilter').addEventListener('change',render);
+$('transactions').addEventListener('click',e=>{const id=e.target.dataset.delete;if(!id)return;if(confirm('Delete this transaction?')){state.transactions=state.transactions.filter(t=>t.id!==id);persist();render();toast('Transaction deleted.');}});
+$('exportCsv').addEventListener('click',()=>{const rows=[['Date','Type','Amount INR','From / To','Category','Source / Destination','Note'],...state.transactions.map(t=>[t.date,t.type,t.amount,t.person,t.category,t.source,t.note])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');download(csv,'noir-transactions.csv','text/csv');});
+$('backup').addEventListener('click',()=>download(JSON.stringify(state,null,2),'noir-backup.json','application/json'));
+$('restoreBtn').addEventListener('click',()=>$('restoreFile').click());
+$('restoreFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(!Array.isArray(data.transactions)||!Number.isFinite(Number(data.opening)))throw Error();if(confirm('Restore this backup? It will replace the data currently in this browser.')){state={opening:Number(data.opening),transactions:data.transactions};persist();$('opening').value=state.opening;render();toast('Backup restored.');}}catch(err){toast('Invalid backup file.');}e.target.value='';});
+function download(content,name,type){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
+render();
+</script>
+</body>
+</html>
